@@ -1,0 +1,14 @@
+{
+  "name": "boiler-plate",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "zoe",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.9.17"
+  },
+  "scripts": {
+    "start": "node index.js"
+  }
+}
