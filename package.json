@@ -13,10 +13,13 @@
     "mongoose": "^5.9.17"
   },
   "scripts": {
-    "start": "node index.js",
-    "backend": "nodemon index.js"
+    "start": "node server/index.js",
+    "backend": "nodemon server/index.js",
+    "front": "yarn --cwd ./client run start",
+    "dev": "concurrently \"yarn run backend\" \"yarn run front\""
   },
   "devDependencies": {
+    "concurrently": "^5.2.0",
     "nodemon": "^2.0.4"
   }
 }
