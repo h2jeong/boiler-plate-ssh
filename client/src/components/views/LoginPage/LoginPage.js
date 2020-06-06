@@ -29,7 +29,14 @@ function LoginPage(props) {
         alert("Error");
       }
     });
-    // Axios.post("/api/users/login", body).then(res => {});
+    // Axios.post("/api/users/login", body).then(res => {
+    //   // console.log(res);
+    //   if (res.data.loginSuccess) {
+    //     props.history.push("/");
+    //   } else {
+    //     alert(res.data.message);
+    //   }
+    // });
   };
 
   return (

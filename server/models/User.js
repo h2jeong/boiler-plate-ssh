@@ -40,6 +40,7 @@ userSchema.pre("save", function(next) {
   let user = this;
 
   // 유저 정보를 수정할 때가 아니라 비밀번호가 변경될때만 처리한다.
+  // Document.prototype.isModified() - Returns true if this document was modified, else false.
   if (user.isModified("password")) {
     // SALT를 이용하여 암호화하기 : salt생성 - saltRounds = (글자수)
     bcrypt.genSalt(saltRounds, function(err, salt) {
@@ -58,6 +59,10 @@ userSchema.pre("save", function(next) {
 userSchema.methods.comparePassword = function(plainPassword, cb) {
   let user = this;
   // plainPassword 1234567 암호화된 비밀번호 $2b$10$X/DS6vCsugMFQhQ1x/RvcOXwnpm5KIhRPo19LEnYhiGSFK1mSOjlu
+
+  //bcrypt.compare(myPlaintextPassword, hash, function(err, result) {
+  // // result == true or false
+  // });
   bcrypt.compare(plainPassword, this.password, function(err, isMatch) {
     if (err) return cb(err);
     cb(null, isMatch);

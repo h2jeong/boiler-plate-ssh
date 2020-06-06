@@ -93,6 +93,8 @@ app.get("/api/users/auth", auth, (req, res) => {
 
 // logout router
 app.get("/api/users/logout", auth, (req, res) => {
+  // 로그인 유저 정보 확인 - _id, token 정보를 체크해야 로그아웃 가능
+  // => middleware : auth
   // 로그인한 유저의 데이터베이스의 토큰을 지워준다.
   User.findOneAndUpdate({ _id: req.user._id }, { token: "" }, (err, user) => {
     if (err) return res.json({ success: false, err });
