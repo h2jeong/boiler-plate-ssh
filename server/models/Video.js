@@ -8,10 +8,9 @@ const videoSchema = new Schema(
     description: { type: String, maxlength: 200 },
     privacy: { type: Number },
     category: { type: Number },
-    fileName: { type: String },
     filePath: { type: String },
     thumbnail: { type: String },
-    duration: { type: Number },
+    duration: { type: String },
     views: { type: Number, default: 0 }
   },
   { timestamps: true }

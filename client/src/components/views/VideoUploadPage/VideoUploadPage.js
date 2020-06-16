@@ -6,6 +6,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import { withRouter } from "react-router-dom";
 import Dropzone from "react-dropzone";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 const privacies = [
   { value: 0, label: "Private" },
@@ -18,24 +19,41 @@ const categories = [
 ];
 
 function VideoUploadPage(props) {
-  const [VideoTitle, setVideoTitle] = useState("");
-  const [Description, setDescription] = useState("");
-  const [Privacy, setPrivacy] = useState("Private");
-  const [Category, setCategory] = useState(0);
+  const authUser = useSelector(state => state.user.auth);
+  console.log("user:", authUser);
+  // const [VideoTitle, setVideoTitle] = useState("");
+  // const [Description, setDescription] = useState("");
+  // const [Privacy, setPrivacy] = useState("Private");
+  // const [Category, setCategory] = useState(0);
 
-  const onTitleChange = e => {
-    setVideoTitle(e.currentTarget.value);
-  };
-  const onDescChange = e => {
-    setDescription(e.currentTarget.value);
-  };
-  const onPrivacyChange = e => {
-    setPrivacy(e.currentTarget.value);
-  };
-  const onCategoryChange = e => {
-    setCategory(e.currentTarget.value);
-  };
+  // const onTitleChange = e => {
+  //   setVideoTitle(e.currentTarget.value);
+  // };
+  // const onDescChange = e => {
+  //   setDescription(e.currentTarget.value);
+  // };
+  // const onPrivacyChange = e => {
+  //   setPrivacy(e.currentTarget.value);
+  // };
+  // const onCategoryChange = e => {
+  //   setCategory(e.currentTarget.value);
+  // };
 
+  const [Video, setVideo] = useState({
+    writer: "",
+    title: "",
+    description: "",
+    privacy: 0,
+    category: 0,
+    filePath: "",
+    thumbnail: "",
+    duration: ""
+  });
+  const [ThumbnailPath, setThumbnailPath] = useState("");
+  const onInputChange = e => {
+    const { name, value } = e.currentTarget;
+    setVideo({ ...Video, [name]: value });
+  };
   const onDrop = acceptedFiles => {
     // 1. FormData에 파일을 append -> header config -> 전송
     // 2. 업로드 폴더에 넣어주기 -> 응답 성공이면
@@ -44,7 +62,7 @@ function VideoUploadPage(props) {
     // 4. 썸네일 폴더에 넣어주기 -> 응답 성공?
     const frm = new FormData();
     frm.append("file", acceptedFiles[0]);
-    console.log("acceptedFiles:", acceptedFiles[0], ",frm", frm);
+    console.log("acceptedFiles:", acceptedFiles[0]);
     axios
       .post("/api/video/uploadFiles", frm, {
         header: { "content-type": "multipart/form-data" }
@@ -57,9 +75,21 @@ function VideoUploadPage(props) {
             filePath: res.data.path,
             fileName: res.data.filename
           };
+
+          setVideo({ ...Video, filePath: res.data.path });
+
           axios.post("/api/video/thumbnail", variable).then(res => {
             if (res.data.success) {
               console.log("thumb::", res.data);
+              // { success: true
+              // fileDuration: 106.084
+              // thumbsnailsPath: "uploads/thumbnails/thumbnail-1592329061274_KakaoTalk_Video_2019-12-13-10-01-58_1.png" }
+              setVideo({
+                ...Video,
+                fileDuration: res.data.fileDuration,
+                thumbnail: res.data.thumbsnailsPath
+              });
+              setThumbnailPath(res.data.thumbsnailsPath);
             } else {
               alert("Failed to create thumbnails.");
             }
@@ -72,6 +102,25 @@ function VideoUploadPage(props) {
 
   const onSubmit = e => {
     e.preventDefault();
+    // const variable = {
+    //   writer: "",
+    //   title: VideoTitle,
+    //   description: Description,
+    //   privacy: Privacy,
+    //   category: Category,
+    //   filePath: "",
+    //   thumbnail: "",
+    //   duration: ""
+    // };
+    setVideo({ ...Video, writer: authUser.user._id });
+    console.log("Video:", Video);
+    axios.post("/api/video/uploadVideo", Video).then(res => {
+      if (res.data.success) {
+        console.log("uploadVideo::", res.data);
+      } else {
+        alert("Failed to upload video.");
+      }
+    });
   };
 
   return (
@@ -101,22 +150,26 @@ function VideoUploadPage(props) {
             )}
           </Dropzone>
           {/* Thumbnail zone */}
-
-          <div>
-            <img src alt="thumbnail" />
-          </div>
+          {ThumbnailPath && (
+            <div>
+              <img
+                src={`http://localhost:3001/${ThumbnailPath}`}
+                alt="thumbnail"
+              />
+            </div>
+          )}
         </div>
         <br />
         <br />
         <label>Title</label>
-        <Input onChange={onTitleChange} value={VideoTitle} />
+        <Input onChange={onInputChange} />
         <br />
         <br />
         <label>Description</label>
-        <TextArea onChange={onDescChange} value={Description} />
+        <TextArea onChange={onInputChange} />
         <br />
         <br />
-        <select onChange={onPrivacyChange}>
+        <select onChange={onInputChange}>
           {privacies.map((privacy, idx) => (
             <option key={idx} value={privacy.value}>
               {privacy.label}
@@ -125,7 +178,7 @@ function VideoUploadPage(props) {
         </select>
         <br />
         <br />
-        <select onChange={onCategoryChange}>
+        <select onChange={onInputChange}>
           {categories.map((category, idx) => (
             <option key={idx} value={category.value}>
               {category.label}

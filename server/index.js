@@ -7,6 +7,9 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const config = require("./config/key");
 
+app.use("/static", express.static(__dirname + "/uploads"));
+// app.use(express.static("public"));
+
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());

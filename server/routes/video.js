@@ -69,7 +69,23 @@ router.post("/thumbnail", (req, res) => {
   ffmpeg.ffprobe(req.body.filePath, (err, metadata) => {
     if (err) throw err;
     console.log("metadata:", metadata.format);
-
+    // {filename: 'uploads/1592329061274_KakaoTalk_Video_2019-12-13-10-01-58.mp4',
+    //    nb_streams: 2,
+    //    nb_programs: 0,
+    //    format_name: 'mov,mp4,m4a,3gp,3g2,mj2',
+    //    format_long_name: 'QuickTime / MOV',
+    //    start_time: 0,
+    //    duration: 106.084,
+    //    size: 27709534,
+    //    bit_rate: 2089629,
+    //    probe_score: 100,
+    //    tags: {
+    //      major_brand: 'isom',
+    //      minor_version: '512',
+    //      compatible_brands: 'isomiso2avc1mp41',
+    //      encoder: 'Lavf57.56.101'
+    //    }
+    //  }
     fileDuration = metadata.format.duration;
   });
 
@@ -97,6 +113,16 @@ router.post("/thumbnail", (req, res) => {
       // %b input basename (filename w/o extension)
       filename: "thumbnail-%b.png"
     });
+});
+
+router.post("/uploadVideo", (req, res) => {
+  console.log("server upload:", req.body);
+  const video = new Video(req.body);
+
+  video.save((err, doc) => {
+    if (err) return res.status(400).json({ success: false, err });
+    return res.status(200).json({ success: true });
+  });
 });
 
 module.exports = router;
