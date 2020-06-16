@@ -1,78 +1,172 @@
-import React, { useState } from "react";
-
+import React from "react";
+import { Form, Input, Tooltip, Row, Col, Button } from "antd";
+import { QuestionCircleOutlined } from "@ant-design/icons";
+// import axios from "axios";
+import { withRouter } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { registerUser } from "../../../_actions/user_actions";
-import { withRouter } from "react-router-dom";
 
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 8 }
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 16 }
+  }
+};
+const tailFormItemLayout = {
+  wrapperCol: {
+    xs: {
+      span: 24,
+      offset: 0
+    },
+    sm: {
+      span: 16,
+      offset: 8
+    }
+  }
+};
 function RegisterPage(props) {
   const dispatch = useDispatch();
 
-  const [Email, setEmail] = useState("");
-  const [Password, setPassword] = useState("");
-  const [Name, setName] = useState("");
-  const [ConfirmPassword, setConfirmPassword] = useState("");
-
-  const onEmailHandler = e => {
-    setEmail(e.currentTarget.value);
-  };
-  const onNameHandler = e => {
-    setName(e.currentTarget.value);
-  };
-  const onPasswordHandler = e => {
-    setPassword(e.currentTarget.value);
-  };
-  const onConfirmPasswordHandler = e => {
-    setConfirmPassword(e.currentTarget.value);
-  };
-  const onSubmitHandler = e => {
-    e.preventDefault();
-
-    if (Password !== ConfirmPassword) {
-      return alert("비밀번호와 비밀번호 확인은 같아야 합니다.");
-    }
-    let body = { email: Email, password: Password, name: Name };
-
-    dispatch(registerUser(body)).then(res => {
-      if (res.payload.success) {
+  const [form] = Form.useForm();
+  const onFinish = values => {
+    // console.log("Received values of form: ", values);
+    // axios.post("/api/users/register", values).then(res => {
+    dispatch(registerUser(values)).then(res => {
+      console.log(res);
+      if (res.payload.registerSuccess) {
         props.history.push("/login");
       } else {
-        alert("Failed to sign up");
+        alert("Failed to Register. ", res.data.err);
       }
     });
   };
+
   return (
     <div
       style={{
         display: "flex",
-        width: "100%",
         justifyContent: "center",
-        alignContent: "center",
-        height: "100vh"
+        alignItems: "center"
       }}
     >
-      <form
-        style={{
-          display: "flex",
-          flexDirection: "column"
-        }}
-        onSubmit={onSubmitHandler}
+      <Form
+        {...formItemLayout}
+        form={form}
+        name="register"
+        onFinish={onFinish}
+        scrollToFirstError
+        style={{ minWidth: "400px" }}
       >
-        <label>Email</label>
-        <input type="email" value={Email} onChange={onEmailHandler} />
-        <label>Name</label>
-        <input type="text" value={Name} onChange={onNameHandler} />
-        <label>Password</label>
-        <input type="password" value={Password} onChange={onPasswordHandler} />
-        <label>Confirm Password</label>
-        <input
-          type="password"
-          value={ConfirmPassword}
-          onChange={onConfirmPasswordHandler}
-        />
+        <Form.Item
+          name="email"
+          label="E-mail"
+          rules={[
+            {
+              type: "email",
+              message: "The input is not valid E-mail!"
+            },
+            {
+              required: true,
+              message: "Please input your E-mail!"
+            }
+          ]}
+        >
+          <Input />
+        </Form.Item>
 
-        <br />
-        <button type="submit">회원가입</button>
-      </form>
+        <Form.Item
+          name="password"
+          label="Password"
+          rules={[
+            {
+              required: true,
+              message: "Please input your password!"
+            }
+          ]}
+          hasFeedback
+        >
+          <Input.Password />
+        </Form.Item>
+
+        <Form.Item
+          name="confirm"
+          label="Confirm Password"
+          dependencies={["password"]}
+          hasFeedback
+          rules={[
+            {
+              required: true,
+              message: "Please confirm your password!"
+            },
+            ({ getFieldValue }) => ({
+              validator(rule, value) {
+                if (!value || getFieldValue("password") === value) {
+                  return Promise.resolve();
+                }
+                return Promise.reject(
+                  "The two passwords that you entered do not match!"
+                );
+              }
+            })
+          ]}
+        >
+          <Input.Password />
+        </Form.Item>
+
+        <Form.Item
+          name="name"
+          label={
+            <span>
+              Name&nbsp;
+              <Tooltip title="What do you want others to call you?">
+                <QuestionCircleOutlined />
+              </Tooltip>
+            </span>
+          }
+          rules={[
+            {
+              required: true,
+              message: "Please input your name!",
+              whitespace: true
+            }
+          ]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="Captcha"
+          extra="We must make sure that your are a human."
+        >
+          <Row gutter={8}>
+            <Col span={12}>
+              <Form.Item
+                name="captcha"
+                noStyle
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input the captcha you got!"
+                  }
+                ]}
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Button>Get captcha</Button>
+            </Col>
+          </Row>
+        </Form.Item>
+        <Form.Item {...tailFormItemLayout}>
+          <Button type="primary" htmlType="submit">
+            Register
+          </Button>
+        </Form.Item>
+      </Form>
     </div>
   );
 }

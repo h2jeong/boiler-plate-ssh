@@ -1,37 +1,41 @@
 import React, { useEffect } from "react";
-// import Axios from "axios";
+// import axios from "axios";
 import { useDispatch } from "react-redux";
-import { auth } from "../_actions/user_actions";
+import { authUser } from "../_actions/user_actions";
 
 export default function(SpecificComponent, option, adminRoute = null) {
-  // option = null(아무나 출입가능)) || true(로그인한 유저 출입가능) || false(로그인한 유저 출입 불가)
-
   function AuthenticationCheck(props) {
+    // 백엔드에 유저의 상태를 가져온다.
+    // option - null : 아무나 출입 가능, true : 로그인 유저만, false: 로그인 유저 불가능
+    // adminRoute - null, true, false
+    // 가져온 상태를 가지고 분기 처리를 해준다.
+    // 로그인/로그아웃 ? 옵션 값 확인 ? 어드민 루트와 어드민 상태 확인
     const dispatch = useDispatch();
 
     useEffect(() => {
-      // Axios.get("/api/users/auth");
-      dispatch(auth()).then(res => {
-        console.log("auth::", res.payload);
-        // 로그인 하지 않은 상태
-        if (!res.payload.isAuth) {
-          if (option) {
-            props.history.push("/login");
-          }
-        } else {
-          // 로그인한 상태
-          if (adminRoute && !res.payload.isAdmin) {
-            props.history.push("/");
+      // axios.get("/api/users/auth").then(res => {
+      dispatch(authUser())
+        .then(async res => {
+          const { isAuth, isAdmin } = res.payload;
+          console.log("res.payload:", res.payload);
+
+          if (await !isAuth) {
+            if (option) props.history.push("/login");
           } else {
             if (option === false) {
               props.history.push("/");
             }
+            if (adminRoute && !isAdmin) {
+              props.history.push("/");
+            }
           }
-        }
-      });
-    }, []);
+        })
+        .catch(err => {
+          console.log("auth error:", err);
+        });
+    }, [props.history, dispatch]);
 
-    return <SpecificComponent />;
+    return <SpecificComponent {...props} />;
   }
 
   return AuthenticationCheck;

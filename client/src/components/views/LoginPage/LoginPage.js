@@ -1,68 +1,78 @@
-import React, { useState } from "react";
-// import Axios from "axios";
+import React from "react";
+import { Form, Input, Button, Checkbox } from "antd";
+import { MailOutlined, LockOutlined } from "@ant-design/icons";
+// import axios from "axios";
+import { withRouter } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../../../_actions/user_actions";
-import { withRouter } from "react-router-dom";
 
 function LoginPage(props) {
   const dispatch = useDispatch();
 
-  const [Email, setEmail] = useState("");
-  const [Password, setPassword] = useState("");
-
-  const onEmailHandler = e => {
-    setEmail(e.currentTarget.value);
-  };
-  const onPasswordHandler = e => {
-    setPassword(e.currentTarget.value);
-  };
-  const onSubmitHandler = e => {
-    e.preventDefault();
-    //  console.log("email", Email, "password", Password);
-
-    let body = { email: Email, password: Password };
-
-    dispatch(loginUser(body)).then(res => {
+  const onFinish = values => {
+    // console.log("Success:", values);
+    // axios.post("/api/users/login", values).then(res => {
+    dispatch(loginUser(values)).then(res => {
+      //console.log(res.data);
       if (res.payload.loginSuccess) {
         props.history.push("/");
       } else {
-        alert("Error");
+        alert("Failed to Log In. ", res.data.err);
       }
     });
-    // Axios.post("/api/users/login", body).then(res => {
-    //   // console.log(res);
-    //   if (res.data.loginSuccess) {
-    //     props.history.push("/");
-    //   } else {
-    //     alert(res.data.message);
-    //   }
-    // });
   };
 
   return (
     <div
       style={{
         display: "flex",
-        width: "100%",
         justifyContent: "center",
-        alignContent: "center",
-        height: "100vh"
+        alignItems: "center"
       }}
     >
-      <form
-        style={{
-          display: "flex",
-          flexDirection: "column"
-        }}
-        onSubmit={onSubmitHandler}
+      <Form
+        name="normal_login"
+        className="login-form"
+        initialValues={{ remember: true }}
+        onFinish={onFinish}
+        style={{ width: "300px", maxWidth: "400px" }}
       >
-        <label>Email</label>
-        <input type="email" value={Email} onChange={onEmailHandler} />
-        <label>Password</label>
-        <input type="password" value={Password} onChange={onPasswordHandler} />
-        <br />
-        <button type="submit">Login</button>
-      </form>
+        <Form.Item
+          name="email"
+          rules={[{ required: true, message: "Please input your email!" }]}
+        >
+          <Input
+            prefix={<MailOutlined className="site-form-item-icon" />}
+            placeholder="Email"
+          />
+        </Form.Item>
+
+        <Form.Item
+          name="password"
+          rules={[{ required: true, message: "Please input your password!" }]}
+        >
+          <Input
+            prefix={<LockOutlined className="site-form-item-icon" />}
+            type="password"
+            placeholder="Password"
+          />
+        </Form.Item>
+
+        <Form.Item name="remember" valuePropName="checked" noStyle>
+          <Checkbox>Remember me</Checkbox>
+        </Form.Item>
+
+        <Form.Item>
+          <Button
+            type="primary"
+            htmlType="submit"
+            style={{ width: "100%", marginTop: "25px" }}
+          >
+            Log in
+          </Button>
+          Or <a href="/register">register now!</a>
+        </Form.Item>
+      </Form>
     </div>
   );
 }
