@@ -26,4 +26,6 @@ yarn.lock
 .idea/*
 .idea/
 
+# application
 dev.js
+uploads/
