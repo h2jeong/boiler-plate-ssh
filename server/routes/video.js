@@ -66,8 +66,8 @@ router.post("/thumbnail", (req, res) => {
   // ffprobe 메소드는 파일 경로를 인자로 받아 콜백함수로 metadata를 받을 수 있다.
   // const {duration, size} = metadata.format;
   // metadata 에서 duration을 알아낸다.
-  ffmpeg.ffprobe(req.body.filePath, (err, metadata) => {
-    if (err) throw err;
+  ffmpeg.ffprobe(req.body.filePath, function(err, metadata) {
+    // if (err) throw err;
     console.log("metadata:", metadata.format);
     // {filename: 'uploads/1592329061274_KakaoTalk_Video_2019-12-13-10-01-58.mp4',
     //    nb_streams: 2,
@@ -105,14 +105,20 @@ router.post("/thumbnail", (req, res) => {
         fileDuration: fileDuration
       });
     })
-    .screenshots({
-      // Will take screens at 20%, 40%, 60% and 80% of the video
-      count: 2,
-      folder: "uploads/thumbnails",
-      size: "320x240",
-      // %b input basename (filename w/o extension)
-      filename: "thumbnail-%b.png"
-    });
+    .on("error", function(err) {
+      console.log("an error happened: ", err.message);
+    })
+    .takeScreenshots(
+      {
+        // Will take screens at 20%, 40%, 60% and 80% of the video
+        count: 2,
+        timemarks: ["00:00:01.000"],
+        size: "320x240",
+        // %b input basename (filename w/o extension)
+        filename: "thumbnail-%b.png"
+      },
+      "uploads/thumbnails"
+    );
 });
 
 router.post("/uploadVideo", (req, res) => {

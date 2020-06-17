@@ -1,13 +1,13 @@
 const express = require("express");
 const app = express();
-const port = 3001;
+const port = 8080;
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const config = require("./config/key");
 
-app.use("/static", express.static(__dirname + "/uploads"));
+// app.use("/static", express.static(__dirname + "/uploads"));
 // app.use(express.static("public"));
 
 app.use(cors());
