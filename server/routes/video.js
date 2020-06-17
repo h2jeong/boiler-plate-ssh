@@ -26,13 +26,13 @@ router.post("/uploadFiles", (req, res) => {
   upload(req, res, function(err) {
     if (err instanceof multer.MulterError) {
       // A Multer error occurred when uploading.
-      res.json({
+      return res.json({
         success: false,
         message: "error during uploading"
       });
     } else if (err) {
       // An unknown error occurred when uploading.
-      res.status(400).json({ success: false, message: err });
+      return res.status(400).json({ success: false, err });
     }
     console.log("video::", req.file);
     // 썸네일 생성 하기 위해 필요한 정보만 넘겨준다.
@@ -46,7 +46,7 @@ router.post("/uploadFiles", (req, res) => {
     //   path: "uploads/file-1592319394247",
     //   size: 27709534 }
 
-    res.status(200).json({
+    return res.json({
       success: true,
       path: req.file.path,
       filename: req.file.filename
@@ -107,18 +107,16 @@ router.post("/thumbnail", (req, res) => {
     })
     .on("error", function(err) {
       console.log("an error happened: ", err.message);
+      return res.json({ success: false, err });
     })
-    .takeScreenshots(
-      {
-        // Will take screens at 20%, 40%, 60% and 80% of the video
-        count: 2,
-        timemarks: ["00:00:01.000"],
-        size: "320x240",
-        // %b input basename (filename w/o extension)
-        filename: "thumbnail-%b.png"
-      },
-      "uploads/thumbnails"
-    );
+    .screenshots({
+      // Will take screens at 20%, 40%, 60% and 80% of the video
+      count: 3,
+      folder: "uploads/thumbnails",
+      size: "320x240",
+      // %b input basename ( filename w/o extension )
+      filename: "thumbnail-%b.png"
+    });
 });
 
 router.post("/uploadVideo", (req, res) => {

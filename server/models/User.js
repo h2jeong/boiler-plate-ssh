@@ -4,7 +4,7 @@ const bcrypt = require("bcrypt");
 const saltRounds = 10;
 const jwt = require("jsonwebtoken");
 
-const userSchema = new Schema({
+const userSchema = mongoose.Schema({
   email: {
     type: String,
     unique: 1,

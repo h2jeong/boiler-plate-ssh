@@ -24,8 +24,8 @@ function VideoUploadPage(props) {
 
   const [VideoTitle, setVideoTitle] = useState("");
   const [Description, setDescription] = useState("");
-  const [Privacy, setPrivacy] = useState("Private");
-  const [Category, setCategory] = useState(0);
+  const [Privacy, setPrivacy] = useState(0);
+  const [Category, setCategory] = useState("Film & Animation");
   const [FilePath, setFilePath] = useState("");
   const [Duration, setDuration] = useState("");
   const [Thumbnail, setThumbnail] = useState("");
@@ -100,17 +100,18 @@ function VideoUploadPage(props) {
               // });
               // setThumbnailPath(res.data.thumbsnailsPath);
             } else {
-              alert("Failed to create thumbnails.");
+              alert("Failed to create thumbnails.", res.data.err);
             }
           });
         } else {
-          alert("Failed to upload file.", res.data.message);
+          alert("Failed to upload file.", res.data.err);
         }
       });
   };
 
   const onSubmit = e => {
     e.preventDefault();
+
     const variable = {
       writer: authUser.user._id,
       title: VideoTitle,
@@ -126,6 +127,8 @@ function VideoUploadPage(props) {
     axios.post("/api/video/uploadVideo", variable).then(res => {
       if (res.data.success) {
         console.log("uploadVideo::", res.data);
+        message.info("Successful Upload Video ");
+        props.history.push("/");
       } else {
         alert("Failed to upload video.");
       }
@@ -133,12 +136,17 @@ function VideoUploadPage(props) {
   };
 
   return (
-    <div style={{ maxWidth: "700px", margin: "2rem auto" }}>
+    <div style={{ width: "700px", maxWidth: "700px", margin: "2rem auto" }}>
       <div style={{ textAlign: "center", marginBottom: "2rem" }}>
         <Title level={2}>Upload Video</Title>
       </div>
       <Form onSubmit={onSubmit}>
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between"
+          }}
+        >
           {/* Drop zone */}
           <Dropzone onDrop={onDrop} multiple={false} maxSize={100000000}>
             {({ getRootProps, getInputProps }) => (

@@ -20,7 +20,7 @@
     "nodemon": "^2.0.4"
   },
   "scripts": {
-    "start": "node server/index.js",
+    "serve": "node server/index.js",
     "backend": "nodemon server/index.js",
     "frontend": "yarn --cwd ./client run start",
     "dev": "concurrently \"yarn run backend\" \"yarn run frontend\""
