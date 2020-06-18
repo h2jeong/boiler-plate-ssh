@@ -129,4 +129,13 @@ router.post("/uploadVideo", (req, res) => {
   });
 });
 
+router.get("/getVideos", (req, res) => {
+  // Video를 다 가져오면서 올린이 정보를 표시해야 하므로 ref된 writer를 populate 해준다.
+  Video.find()
+    .populate("writer")
+    .exec((err, videos) => {
+      if (err) return res.status(400).json({ success: false, err });
+      return res.status(200).json({ success: true, videos });
+    });
+});
 module.exports = router;

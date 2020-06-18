@@ -111,7 +111,7 @@ function VideoUploadPage(props) {
 
   const onSubmit = e => {
     e.preventDefault();
-
+    console.log("submit");
     const variable = {
       writer: authUser.user._id,
       title: VideoTitle,
@@ -169,7 +169,7 @@ function VideoUploadPage(props) {
           {/* Thumbnail zone */}
           {Thumbnail && (
             <div>
-              <img src={`http://localhost:8080/${Thumbnail}`} alt="thumbnail" />
+              <img src={`http://localhost:8000/${Thumbnail}`} alt="thumbnail" />
             </div>
           )}
         </div>
@@ -201,7 +201,8 @@ function VideoUploadPage(props) {
         </select>
         <br />
         <br />
-        <Button type="primary" size="large" htmlType="submit">
+        {/* available - onClick={onSubmit}, invalid - htmlFor= 'submit'  */}
+        <Button type="primary" size="large" onClick={onSubmit}>
           Submit
         </Button>
       </Form>
