@@ -9,6 +9,7 @@ import NavBar from "./views/NavBar/NavBar";
 import Auth from "../hoc/auth";
 import VideoUploadPage from "./views/VideoUploadPage/VideoUploadPage";
 import VideoDetailPage from "./views/VideoDetailPage/VideoDetailPage";
+import SubscriptionPage from "./views/VideoDetailPage/Sections/SubscriptionPage";
 
 const { Content, Footer } = Layout;
 
@@ -42,6 +43,10 @@ function App() {
               <Route
                 path="/video/:videoId"
                 component={Auth(VideoDetailPage, null)}
+              />
+              <Route
+                path="/subscribe"
+                component={Auth(SubscriptionPage, true)}
               />
             </Switch>
           </div>
