@@ -12,7 +12,24 @@ router.post("/subscribe", (req, res) => {
   });
 });
 
-router.post("/subscribedNumber", (req, res) => {
+router.post("/unSubscribe", (req, res) => {
+  const { userTo, userFrom } = req.body;
+  Subscriber.findOneAndDelete({ userTo, userFrom }).exec((err, doc) => {
+    if (err) return res.status(400).json({ success: false, err });
+    return res.status(200).json({ success: true });
+  });
+});
+
+router.post("/subscribed", (req, res) => {
+  const { userTo, userFrom } = req.body;
+  Subscriber.find({ userTo, userFrom }).exec((err, doc) => {
+    if (err) return res.status(400).json({ success: false, err });
+    console.log("subscribed:", !!doc.length);
+    return res.status(200).json({ success: true, subscribed: !!doc.length });
+  });
+});
+
+router.post("/getCount", (req, res) => {
   Subscriber.find({ userTo: req.body.userTo }).exec((err, doc) => {
     if (err) return res.status(400).json({ success: false, err });
     return res.status(200).json({ success: true, count: doc.length });
