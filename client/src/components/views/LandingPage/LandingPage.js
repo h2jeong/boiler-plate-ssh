@@ -4,7 +4,6 @@ import Meta from "antd/lib/card/Meta";
 import { Avatar, Col, Row } from "antd";
 import Title from "antd/lib/typography/Title";
 
-import { withRouter } from "react-router-dom";
 import axios from "axios";
 import moment from "moment";
 
@@ -34,25 +33,24 @@ function LandingPage(props) {
 
     return (
       <Col lg={6} md={8} xs={24} key={idx}>
-        <a href>
-          <div style={{ position: "relative" }}>
+        <div style={{ position: "relative" }}>
+          <a href={`/video/${video._id}`}>
             <img
               style={{ width: "100%" }}
               src={`http://localhost:8000/${video.thumbnail}`}
               alt="thumbnail"
             />
-
-            <div className="duration">
-              <span>
-                {moment
-                  .utc(
-                    moment.duration(video.duration, "seconds").asMilliseconds()
-                  )
-                  .format("mm:ss")}
-              </span>
-            </div>
+          </a>
+          <div className="duration">
+            <span>
+              {moment
+                .utc(
+                  moment.duration(video.duration, "seconds").asMilliseconds()
+                )
+                .format("mm:ss")}
+            </span>
           </div>
-        </a>
+        </div>
         <br />
         <Meta
           avatar={<Avatar src={video.writer.image} />}
@@ -61,7 +59,7 @@ function LandingPage(props) {
         />
         <span>{video.writer.name}</span>
         <br />
-        <span style={{ marginLeft: "3rem" }}>{video.views}</span> -{" "}
+        <span style={{ marginLeft: "3rem" }}>{video.views}</span> -
         <span>{video.createAt}</span>
       </Col>
     );
@@ -76,4 +74,4 @@ function LandingPage(props) {
   );
 }
 
-export default withRouter(LandingPage);
+export default LandingPage;

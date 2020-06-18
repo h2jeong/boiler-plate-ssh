@@ -8,6 +8,7 @@ import LoginPage from "./views/LoginPage/LoginPage";
 import NavBar from "./views/NavBar/NavBar";
 import Auth from "../hoc/auth";
 import VideoUploadPage from "./views/VideoUploadPage/VideoUploadPage";
+import VideoDetailPage from "./views/VideoDetailPage/VideoDetailPage";
 
 const { Content, Footer } = Layout;
 
@@ -37,6 +38,10 @@ function App() {
               <Route
                 path="/video/upload"
                 component={Auth(VideoUploadPage, true)}
+              />
+              <Route
+                path="/video/:videoId"
+                component={Auth(VideoDetailPage, null)}
               />
             </Switch>
           </div>
