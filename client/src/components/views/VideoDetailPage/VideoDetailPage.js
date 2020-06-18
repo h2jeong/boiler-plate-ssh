@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import { Row, Col, List, Avatar } from "antd";
 import axios from "axios";
 import SideVideo from "./Sections/SideVideo";
+import Subscriber from "./Sections/Subscriber";
 
 function VideoDetailPage(props) {
-  console.log("videoId:", props.match.params);
+  // console.log("videoId:", props.match.params);
   const [Video, setVideo] = useState({});
 
   useEffect(() => {
@@ -12,13 +13,13 @@ function VideoDetailPage(props) {
 
     axios.post("/api/video/getVideo", variable).then(res => {
       if (res.data.success) {
-        console.log("detail:", res.data);
+        // console.log("detail:", res.data);
         setVideo(res.data.video);
       } else {
         alert("Failed to load video detail");
       }
     });
-  }, []);
+  }, [props.match]);
 
   if (Video.writer) {
     return (
@@ -30,7 +31,15 @@ function VideoDetailPage(props) {
               src={`http://localhost:8000/${Video.filePath}`}
               controls
             />
-            <List.Item actions>
+            {/* actions={[ '배열'에 ReactNode 넣어주기]} */}
+            <List.Item
+              actions={[
+                <Subscriber
+                  userTo={Video.writer._id}
+                  userFrom={localStorage.getItem("userId")}
+                />
+              ]}
+            >
               <List.Item.Meta
                 avatar={<Avatar src={Video.writer.image} />}
                 title={Video.title}
