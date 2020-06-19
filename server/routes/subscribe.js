@@ -22,6 +22,7 @@ router.post("/unSubscribe", (req, res) => {
 
 router.post("/subscribed", (req, res) => {
   const { userTo, userFrom } = req.body;
+  console.log("server:", req.body);
   Subscriber.find({ userTo, userFrom }).exec((err, doc) => {
     if (err) return res.status(400).json({ success: false, err });
     console.log("subscribed:", !!doc.length);
@@ -32,6 +33,7 @@ router.post("/subscribed", (req, res) => {
 router.post("/getCount", (req, res) => {
   Subscriber.find({ userTo: req.body.userTo }).exec((err, doc) => {
     if (err) return res.status(400).json({ success: false, err });
+    console.log("getCount:", doc, doc.length);
     return res.status(200).json({ success: true, count: doc.length });
   });
 });

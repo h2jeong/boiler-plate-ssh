@@ -15,6 +15,7 @@ function LoginPage(props) {
     dispatch(loginUser(values)).then(res => {
       //console.log(res.data);
       if (res.payload.loginSuccess) {
+        localStorage.setItem("userId", res.payload.userId);
         props.history.push("/");
       } else {
         alert("Failed to Log In. ", res.data.err);

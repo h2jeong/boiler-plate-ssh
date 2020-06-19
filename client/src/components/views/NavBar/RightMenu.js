@@ -2,16 +2,19 @@ import React from "react";
 import { Menu } from "antd";
 import "./NavBar.css";
 import { UploadOutlined } from "@ant-design/icons";
-import axios from "axios";
 import { withRouter } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { logoutUser } from "../../../_actions/user_actions";
 
 function RightMenu(props) {
   const authUser = useSelector(state => state.user.auth);
+  const dispatch = useDispatch();
+
   // console.log("isAuth:", authUser);
   const handleLogout = () => {
-    axios.post("/api/users/logout").then(res => {
-      if (res.data.success) {
+    dispatch(logoutUser()).then(res => {
+      if (res.payload.success) {
+        localStorage.removeItem("userId");
         props.history.push("/login");
       } else {
         alert("Failed to Logout");

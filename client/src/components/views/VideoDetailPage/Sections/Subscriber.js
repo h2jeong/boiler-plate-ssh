@@ -6,22 +6,28 @@ function Subscriber({ userTo, userFrom }) {
   const [Subscribed, setSubscribed] = useState(false);
   const variable = { userTo, userFrom };
   console.log("variable", variable);
+
   useEffect(() => {
     axios.post("/api/subscribe/getCount", variable).then(res => {
       if (res.data.success) {
-        // console.log(res.data);
+        console.log(res.data);
         setCount(res.data.count);
       } else {
         alert("Failed to get subscribed number");
       }
     });
-    let subscribedVariable = {
-      userTo,
-      userFrom: localStorage.getItem("UserId")
-    };
-    axios.post("/api/subscribe/subscribed", subscribedVariable).then(res => {
+  }, []);
+
+  useEffect(() => {
+    // console.log("userFrom:", localStorage.getItem("UserId"));
+    // let subscribedVariable = {
+    //   userTo,
+    //   userFrom: localStorage.getItem("UserId")
+    // };
+    // console.log("subscribedVariable", subscribedVariable);
+    axios.post("/api/subscribe/subscribed", variable).then(res => {
       if (res.data.success) {
-        console.log(res.data, res.data.subscribed);
+        console.log("subscribed:", res.data, res.data.subscribed);
         setSubscribed(res.data.subscribed);
       } else {
         alert("Failed to get Subscribed Result");

@@ -2,6 +2,7 @@ import axios from "axios";
 export const REGISTER_USER = "REGISTER_USER";
 export const LOGIN_USER = "LOGIN_USER";
 export const AUTH_USER = "AUTH_USER";
+export const LOGOUT_USER = "LOGOUT_USER";
 
 export function registerUser(dataToSubmit) {
   const request = axios.post("/api/users/register", dataToSubmit).then(res => {
@@ -26,4 +27,12 @@ export function authUser() {
   });
 
   return { type: AUTH_USER, payload: request };
+}
+
+export function logoutUser() {
+  const request = axios.post("/api/users/logout").then(res => {
+    return res.data;
+  });
+
+  return { type: LOGOUT_USER, payload: request };
 }
