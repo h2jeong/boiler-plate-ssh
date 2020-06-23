@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Comment, Avatar } from "antd";
 import InputForm from "./InputForm";
+import LikeDislikes from "./LikeDislikes";
 
 function SingleComment({ comment, onUpdate, videoId }) {
   const [Openreply, setOpenreply] = useState(false);
@@ -13,7 +14,12 @@ function SingleComment({ comment, onUpdate, videoId }) {
     <>
       <Comment
         actions={[
-          <span key="comment-nested-reply-to" onClick={onOpenReply}>
+          <LikeDislikes commentId={comment._id} />,
+          <span
+            key="comment-nested-reply-to"
+            onClick={onOpenReply}
+            style={{ marginLeft: "8px" }}
+          >
             Reply to
           </span>
         ]}

@@ -15,7 +15,12 @@ function InputForm({ videoId, onUpdate, commentId }) {
 
   const onSubmit = e => {
     e.preventDefault();
-
+    if (!auth.user) {
+      alert("You can comment after logging in.");
+      setContent("");
+      setOpenreply(false);
+      return;
+    }
     // writer, videoId, responsoTo, content
     const variable = {
       writer: auth.user._id,

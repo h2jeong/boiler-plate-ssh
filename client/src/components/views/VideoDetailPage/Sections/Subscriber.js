@@ -39,8 +39,9 @@ function Subscriber(props) {
 
   const onSubscribe = () => {
     if (userFrom === null) {
-      alert("Subsrcibe is available after login");
-      props.history.push("/login");
+      alert("You can subscribe after logging in.");
+      return;
+      // props.history.push("/login");
     }
     if (Subscribed) {
       axios.post("/api/subscribe/unSubscribe", variable).then(res => {

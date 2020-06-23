@@ -13,7 +13,6 @@ function SubscriptionPage() {
     const variable = { userFrom: localStorage.getItem("userId") };
     axios.post("/api/video/getSubscribedList", variable).then(res => {
       if (res.data.success) {
-        console.log(res.data);
         setVideoList(res.data.subscribedVideos);
       } else {
         alert("Failed to load Subscribed List");
