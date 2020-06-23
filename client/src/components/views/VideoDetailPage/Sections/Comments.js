@@ -5,7 +5,7 @@ import InputForm from "./InputForm";
 import ReplyComment from "./ReplyComment";
 
 function Comments({ videoId, commentList, onUpdate }) {
-  console.log("comments:", commentList.length);
+  // console.log("comments:", commentList.length);
   return (
     <div style={{ paddingTop: "2rem" }}>
       <Title level={3}>Replies</Title>
@@ -21,6 +21,7 @@ function Comments({ videoId, commentList, onUpdate }) {
                   onUpdate={onUpdate}
                   videoId={videoId}
                 />
+                {/* replyComment */}
                 <ReplyComment
                   commentList={commentList}
                   videoId={videoId}
@@ -30,9 +31,8 @@ function Comments({ videoId, commentList, onUpdate }) {
               </div>
             )
         )}
-      {/* replyComment */}
-      {/* inputForm */}
       <br />
+      {/* inputForm */}
       <InputForm videoId={videoId} onUpdate={onUpdate} />
     </div>
   );

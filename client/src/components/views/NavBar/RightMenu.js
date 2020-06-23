@@ -15,7 +15,7 @@ function RightMenu(props) {
     dispatch(logoutUser()).then(res => {
       if (res.payload.success) {
         localStorage.removeItem("userId");
-        props.history.push("/login");
+        props.history.push("/");
       } else {
         alert("Failed to Logout");
       }

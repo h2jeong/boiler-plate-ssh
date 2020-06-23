@@ -17,7 +17,7 @@ export default function(SpecificComponent, option, adminRoute = null) {
       dispatch(authUser())
         .then(async res => {
           const { isAuth, isAdmin } = res.payload;
-          console.log("res.payload:", res.payload);
+          // console.log("res.payload:", res.payload);
 
           if (await !isAuth) {
             if (option) props.history.push("/login");

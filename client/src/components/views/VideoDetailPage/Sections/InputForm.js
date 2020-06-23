@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { Button } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 function InputForm({ videoId, onUpdate, commentId }) {
+  const auth = useSelector(state => state.user.auth);
   const [Content, setContent] = useState("");
   const [Openreply, setOpenreply] = useState(true);
-  const onOpenReply = () => {
-    setOpenreply(!Openreply);
-  };
+
   const handleChange = e => {
     setContent(e.currentTarget.value);
   };
@@ -18,7 +18,7 @@ function InputForm({ videoId, onUpdate, commentId }) {
 
     // writer, videoId, responsoTo, content
     const variable = {
-      writer: localStorage.getItem("userId"),
+      writer: auth.user._id,
       videoId: videoId,
       content: Content,
       responseTo: commentId

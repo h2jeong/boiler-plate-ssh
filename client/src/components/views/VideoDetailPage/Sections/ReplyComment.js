@@ -5,7 +5,7 @@ import axios from "axios";
 function ReplyComment({ commentList, videoId, commentId, onUpdate }) {
   const [ChildCommentNumber, setChildCommentNumber] = useState(0);
   const [Openreply, setOpenreply] = useState(false);
-  console.log("reply:", commentList.length, ChildCommentNumber);
+  // console.log("reply:", commentList.length, ChildCommentNumber);
   useEffect(() => {
     axios.post("/api/comment/getCount", { commentId }).then(res => {
       if (res.data.success) {

@@ -15,7 +15,6 @@ function VideoDetailPage(props) {
   useEffect(() => {
     axios.post("/api/video/getVideo", { videoId }).then(res => {
       if (res.data.success) {
-        // console.log("detail:", res.data);
         setVideo(res.data.video);
       } else {
         alert("Failed to load video detail");
@@ -24,7 +23,6 @@ function VideoDetailPage(props) {
 
     axios.post("/api/comment/getComments", { videoId }).then(res => {
       if (res.data.success) {
-        console.log(res.data);
         setCommentList(res.data.commentList);
       } else {
         alert("Failed to get comment list");
@@ -35,7 +33,7 @@ function VideoDetailPage(props) {
   const onUpdate = newComment => {
     setCommentList(CommentList.concat(newComment));
   };
-  console.log("detail:", CommentList.length);
+  // console.log("detail:", CommentList.length);
 
   if (Video.writer) {
     // 본인을 구독할 수 없음 처리
