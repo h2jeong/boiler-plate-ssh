@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { withRouter } from "react-router-dom";
 
-function Subscriber({ userTo, userFrom }) {
+function Subscriber(props) {
   const [Count, setCount] = useState(0);
   const [Subscribed, setSubscribed] = useState(false);
+  const { userTo, userFrom } = props;
   const variable = { userTo, userFrom };
-  console.log("variable", variable);
+  // console.log("variable", variable);
 
   useEffect(() => {
     axios.post("/api/subscribe/getCount", variable).then(res => {
       if (res.data.success) {
-        console.log(res.data);
+        // console.log(res.data);
         setCount(res.data.count);
       } else {
         alert("Failed to get subscribed number");
@@ -27,7 +29,7 @@ function Subscriber({ userTo, userFrom }) {
     // console.log("subscribedVariable", subscribedVariable);
     axios.post("/api/subscribe/subscribed", variable).then(res => {
       if (res.data.success) {
-        console.log("subscribed:", res.data, res.data.subscribed);
+        // console.log("subscribed:", res.data, res.data.subscribed);
         setSubscribed(res.data.subscribed);
       } else {
         alert("Failed to get Subscribed Result");
@@ -36,6 +38,10 @@ function Subscriber({ userTo, userFrom }) {
   }, []);
 
   const onSubscribe = () => {
+    if (userFrom === null) {
+      alert("Subsrcibe is available after login");
+      props.history.push("/login");
+    }
     if (Subscribed) {
       axios.post("/api/subscribe/unSubscribe", variable).then(res => {
         if (res.data.success) {
@@ -53,7 +59,7 @@ function Subscriber({ userTo, userFrom }) {
           setCount(Count + 1);
           setSubscribed(!Subscribed);
         } else {
-          alert("Failed to Subscribe");
+          alert("Failed to Subscribe", res.data.err);
         }
       });
     }
@@ -64,11 +70,11 @@ function Subscriber({ userTo, userFrom }) {
       style={{
         backgroundColor: `${Subscribed ? "#aaaaaa" : "#cc0000"}`,
         borderWidth: 0,
-        borderRadius: "2px",
+        borderRadius: "3px",
         color: "#fff",
         padding: "10px 16px",
         fontWeight: "500",
-        fontSize: "1rem",
+        fontSize: "0.9rem",
         textTransform: "uppercase"
       }}
     >
@@ -77,4 +83,4 @@ function Subscriber({ userTo, userFrom }) {
   );
 }
 
-export default Subscriber;
+export default withRouter(Subscriber);

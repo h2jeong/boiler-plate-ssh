@@ -64,7 +64,7 @@ router.get("/auth", auth, (req, res) => {
   // 미들웨어를 통과하면 인증됐다는 거고 반대의 경우는 미들웨어에서 끝남
   // 따라서 여기서는 통과된 부분을 가공해서 클라이언트에 전달해주면 끝
   // 인증됐는지 어드민(role 1) 유저인지 추가 정보 가공하기
-  console.log("users/auth:", req.body);
+  // console.log("users/auth:", req.body);
   res.status(200).json({
     user: req.user,
     isAdmin: req.user.role === 0 ? false : true,

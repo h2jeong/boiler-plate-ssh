@@ -3,15 +3,17 @@ import { Row, Col, List, Avatar } from "antd";
 import axios from "axios";
 import SideVideo from "./Sections/SideVideo";
 import Subscriber from "./Sections/Subscriber";
+import Comments from "./Sections/Comments";
 
 function VideoDetailPage(props) {
   // console.log("videoId:", props.match.params);
   const [Video, setVideo] = useState({});
+  const [CommentList, setCommentList] = useState([]);
+
+  const videoId = props.match.params.videoId;
 
   useEffect(() => {
-    const variable = { videoId: props.match.params.videoId };
-
-    axios.post("/api/video/getVideo", variable).then(res => {
+    axios.post("/api/video/getVideo", { videoId }).then(res => {
       if (res.data.success) {
         // console.log("detail:", res.data);
         setVideo(res.data.video);
@@ -19,9 +21,32 @@ function VideoDetailPage(props) {
         alert("Failed to load video detail");
       }
     });
-  }, [props.match]);
+
+    axios.post("/api/comment/getComments", { videoId }).then(res => {
+      if (res.data.success) {
+        console.log(res.data);
+        setCommentList(res.data.commentList);
+      } else {
+        alert("Failed to get comment list");
+      }
+    });
+  }, []);
+
+  const onUpdate = newComment => {
+    setCommentList(CommentList.concat(newComment));
+  };
+  console.log("detail:", CommentList.length);
 
   if (Video.writer) {
+    // 본인을 구독할 수 없음 처리
+    const subscribeButton = Video.writer._id !==
+      localStorage.getItem("userId") && (
+      <Subscriber
+        userTo={Video.writer._id}
+        userFrom={localStorage.getItem("userId")}
+      />
+    );
+
     return (
       <Row gutter={[16, 16]}>
         <Col lg={18} xs={24}>
@@ -32,14 +57,7 @@ function VideoDetailPage(props) {
               controls
             />
             {/* actions={[ '배열'에 ReactNode 넣어주기]} */}
-            <List.Item
-              actions={[
-                <Subscriber
-                  userTo={Video.writer._id}
-                  userFrom={localStorage.getItem("userId")}
-                />
-              ]}
-            >
+            <List.Item actions={[subscribeButton]}>
               <List.Item.Meta
                 avatar={<Avatar src={Video.writer.image} />}
                 title={Video.title}
@@ -47,6 +65,11 @@ function VideoDetailPage(props) {
               />
             </List.Item>
             {/* comment */}
+            <Comments
+              videoId={videoId}
+              commentList={CommentList}
+              onUpdate={onUpdate}
+            />
           </div>
         </Col>
         <Col lg={6} xs={24}>

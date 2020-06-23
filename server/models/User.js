@@ -96,8 +96,7 @@ userSchema.statics.findByToken = function(token, cb) {
 
   jwt.verify(token, "secret", (err, decode) => {
     // JsonWebTokenError: jwt must be provided
-
-    console.log("decode:", decode);
+    // console.log("decode:", decode);
 
     user.findOne({ _id: decode, token: token }, (err, user) => {
       if (err) return cb(err);

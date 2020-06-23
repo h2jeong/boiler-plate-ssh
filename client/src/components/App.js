@@ -9,7 +9,7 @@ import NavBar from "./views/NavBar/NavBar";
 import Auth from "../hoc/auth";
 import VideoUploadPage from "./views/VideoUploadPage/VideoUploadPage";
 import VideoDetailPage from "./views/VideoDetailPage/VideoDetailPage";
-import SubscriptionPage from "./views/VideoDetailPage/Sections/SubscriptionPage";
+import SubscriptionPage from "./views/SubscriptionPage/SubscriptionPage";
 
 const { Content, Footer } = Layout;
 

@@ -23,7 +23,7 @@ let storage = multer.diskStorage({
 let upload = multer({ storage: storage }).single("file");
 
 router.post("/uploadFiles", (req, res) => {
-  console.log("video routes:", req.file);
+  // console.log("video routes:", req.file);
   upload(req, res, function(err) {
     if (err instanceof multer.MulterError) {
       // A Multer error occurred when uploading.
@@ -35,7 +35,7 @@ router.post("/uploadFiles", (req, res) => {
       // An unknown error occurred when uploading.
       return res.status(400).json({ success: false, err });
     }
-    console.log("video::", req.file);
+    // console.log("video::", req.file);
     // 썸네일 생성 하기 위해 필요한 정보만 넘겨준다.
     // => path, filename
     //  { fieldname: "file",
@@ -59,7 +59,7 @@ router.post("/uploadFiles", (req, res) => {
 });
 
 router.post("/thumbnail", (req, res) => {
-  console.log("video thumb::", req.body);
+  // console.log("video thumb::", req.body);
   // const {filePath, fileName} = req.body;
   let fileDuration = "";
   let thumbsnailsPath = "";
@@ -69,7 +69,7 @@ router.post("/thumbnail", (req, res) => {
   // metadata 에서 duration을 알아낸다.
   ffmpeg.ffprobe(req.body.filePath, function(err, metadata) {
     // if (err) throw err;
-    console.log("metadata:", metadata.format);
+    // console.log("metadata:", metadata.format);
     // {filename: 'uploads/1592329061274_KakaoTalk_Video_2019-12-13-10-01-58.mp4',
     //    nb_streams: 2,
     //    nb_programs: 0,
@@ -107,7 +107,7 @@ router.post("/thumbnail", (req, res) => {
       });
     })
     .on("error", function(err) {
-      console.log("an error happened: ", err.message);
+      // console.log("an error happened: ", err.message);
       return res.json({ success: false, err });
     })
     .screenshots({
@@ -121,7 +121,7 @@ router.post("/thumbnail", (req, res) => {
 });
 
 router.post("/uploadVideo", (req, res) => {
-  console.log("server upload:", req.body);
+  // console.log("server upload:", req.body);
   const video = new Video(req.body);
 
   video.save((err, doc) => {
@@ -157,7 +157,7 @@ router.post("/getSubscribedList", (req, res) => {
       let userToList = subscribers.map(
         (subscriber, idx) => subscriber.userTo._id
       );
-      console.log("userToList:", userToList);
+      // console.log("userToList:", userToList);
       Video.find({ writer: { $in: userToList } })
         .populate("writer")
         .exec((err, subscribedVideos) => {
