@@ -59,8 +59,8 @@ function LandingPage(props) {
         />
         <span>{video.writer.name}</span>
         <br />
-        <span style={{ marginLeft: "3rem" }}>{video.views}</span> -
-        <span>{video.createAt}</span>
+        <span style={{ marginLeft: "3rem" }}>views {video.views}</span> ・
+        <span> {moment(video.createdAt).format("YYYY:MM:DD")}</span>
       </Col>
     );
   });
