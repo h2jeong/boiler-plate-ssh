@@ -5,6 +5,7 @@ import { QuestionCircleOutlined } from "@ant-design/icons";
 import { withRouter } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { registerUser } from "../../../_actions/user_actions";
+import moment from "moment";
 
 const formItemLayout = {
   labelCol: {
@@ -35,8 +36,10 @@ function RegisterPage(props) {
   const onFinish = values => {
     // console.log("Received values of form: ", values);
     // axios.post("/api/users/register", values).then(res => {
+    values.image = `http://gravatar.com/avatar/${moment().unix()}?d=identicon`;
+
     dispatch(registerUser(values)).then(res => {
-      console.log(res);
+      // console.log(res);
       if (res.payload.registerSuccess) {
         props.history.push("/login");
       } else {

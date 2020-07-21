@@ -14,8 +14,8 @@ function RightMenu(props) {
   const handleLogout = () => {
     dispatch(logoutUser()).then(res => {
       if (res.payload.success) {
+        props.history.push("/login");
         localStorage.removeItem("userId");
-        props.history.push("/");
       } else {
         alert("Failed to Logout");
       }
@@ -39,6 +39,7 @@ function RightMenu(props) {
         <Menu.Item key="create">
           <a href="/video/upload">
             <UploadOutlined />
+            Upload
           </a>
         </Menu.Item>
         <Menu.Item key="app">

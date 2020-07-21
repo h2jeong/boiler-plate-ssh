@@ -20,44 +20,24 @@ const categories = [
 
 function VideoUploadPage(props) {
   const authUser = useSelector(state => state.user.auth);
-  console.log("user:", authUser);
 
-  const [VideoTitle, setVideoTitle] = useState("");
-  const [Description, setDescription] = useState("");
-  const [Privacy, setPrivacy] = useState(0);
-  const [Category, setCategory] = useState("Film & Animation");
   const [FilePath, setFilePath] = useState("");
-  const [Duration, setDuration] = useState("");
-  const [Thumbnail, setThumbnail] = useState("");
+  const [Video, setVideo] = useState({
+    writer: "",
+    title: "",
+    description: "",
+    privacy: "Private",
+    category: 0,
+    filePath: "",
+    thumbnail: "",
+    duration: ""
+  });
 
-  const onTitleChange = e => {
-    setVideoTitle(e.currentTarget.value);
-  };
-  const onDescChange = e => {
-    setDescription(e.currentTarget.value);
-  };
-  const onPrivacyChange = e => {
-    setPrivacy(e.currentTarget.value);
-  };
-  const onCategoryChange = e => {
-    setCategory(e.currentTarget.value);
+  const onInputChange = e => {
+    const { name, value } = e.currentTarget;
+    setVideo({ ...Video, [name]: value });
   };
 
-  // const [Video, setVideo] = useState({
-  //   writer: "",
-  //   title: "",
-  //   description: "",
-  //   privacy: 0,
-  //   category: 0,
-  //   filePath: "",
-  //   thumbnail: "",
-  //   duration: ""
-  // });
-  // const [ThumbnailPath, setThumbnailPath] = useState("");
-  // const onInputChange = e => {
-  //   const { name, value } = e.currentTarget;
-  //   setVideo({ ...Video, [name]: value });
-  // };
   const onDrop = acceptedFiles => {
     // 1. FormData에 파일을 append -> header config -> 전송
     // 2. 업로드 폴더에 넣어주기 -> 응답 성공이면
@@ -66,71 +46,57 @@ function VideoUploadPage(props) {
     // 4. 썸네일 폴더에 넣어주기 -> 응답 성공?
     const frm = new FormData();
     frm.append("file", acceptedFiles[0]);
-    console.log("acceptedFiles:", acceptedFiles[0]);
+    // console.log("acceptedFiles:", acceptedFiles[0]);
     axios
       .post("/api/video/uploadFiles", frm, {
         header: { "content-type": "multipart/form-data" }
       })
       .then(res => {
         if (res.data.success) {
-          console.log("upload::", res.data);
           // {success: true, path: "uploads/1592320469211_KakaoTalk_Video_2019-12-13-10-01-58.mp4", filename: "1592320469211_KakaoTalk_Video_2019-12-13-10-01-58.mp4"}
           let variable = {
             filePath: res.data.path,
             fileName: res.data.filename
           };
 
-          // setVideo({ ...Video, filePath: res.data.path });
           setFilePath(res.data.path);
 
           axios.post("/api/video/thumbnail", variable).then(res => {
             if (res.data.success) {
-              console.log("thumb::", res.data);
               // { success: true
               // fileDuration: 106.084
               // thumbsnailsPath: "uploads/thumbnails/thumbnail-1592329061274_KakaoTalk_Video_2019-12-13-10-01-58_1.png" }
 
-              setThumbnail(res.data.thumbsnailsPath);
-              setDuration(res.data.fileDuration);
-
-              // setVideo({
-              //   ...Video,
-              //   fileDuration: res.data.fileDuration,
-              //   thumbnail: res.data.thumbsnailsPath
-              // });
-              // setThumbnailPath(res.data.thumbsnailsPath);
+              setVideo({
+                ...Video,
+                duration: res.data.fileDuration,
+                thumbnail: res.data.thumbsnailsPath
+              });
             } else {
-              alert("Failed to create thumbnails.", res.data.err);
+              message.error("Failed to create thumbnails.");
             }
           });
         } else {
-          alert("Failed to upload file.", res.data.err);
+          message.error("Failed to upload file.");
         }
       });
   };
 
   const onSubmit = e => {
     e.preventDefault();
-    console.log("submit");
-    const variable = {
-      writer: authUser.user._id,
-      title: VideoTitle,
-      description: Description,
-      privacy: Privacy,
-      category: Category,
+
+    const variables = {
+      ...Video,
       filePath: FilePath,
-      thumbnail: Thumbnail,
-      duration: Duration
+      writer: authUser.user._id
     };
-    // setVideo({ ...Video, writer: authUser.user._id });
-    // console.log("Video:", Video);
-    axios.post("/api/video/uploadVideo", variable).then(res => {
+
+    axios.post("/api/video/uploadVideo", variables).then(res => {
       if (res.data.success) {
-        console.log("uploadVideo::", res.data);
         message.info("Successful Upload Video ");
         props.history.push("/");
       } else {
-        alert("Failed to upload video.");
+        message.error("Failed to upload video.");
       }
     });
   };
@@ -167,35 +133,42 @@ function VideoUploadPage(props) {
             )}
           </Dropzone>
           {/* Thumbnail zone */}
-          {Thumbnail && (
+          {Video.thumbnail && (
             <div>
-              <img src={`http://localhost:8000/${Thumbnail}`} alt="thumbnail" />
+              <img
+                src={`http://localhost:8000/${Video.thumbnail}`}
+                alt="thumbnail"
+              />
             </div>
           )}
         </div>
         <br />
         <br />
         <label>Title</label>
-        <Input onChange={onTitleChange} value={VideoTitle} />
+        <Input onChange={onInputChange} value={Video.title} name="title" />
         <br />
         <br />
         <label>Description</label>
-        <TextArea onChange={onDescChange} valeu={Description} />
+        <TextArea
+          onChange={onInputChange}
+          valeu={Video.description}
+          name="description"
+        />
         <br />
         <br />
-        <select onChange={onPrivacyChange}>
-          {privacies.map((privacy, idx) => (
-            <option key={idx} value={privacy.value}>
-              {privacy.label}
+        <select onChange={onInputChange} name="privacy" value={Video.privacy}>
+          {privacies.map(item => (
+            <option key={item.value} value={item.label}>
+              {item.label}
             </option>
           ))}
         </select>
         <br />
         <br />
-        <select onChange={onCategoryChange}>
-          {categories.map((category, idx) => (
-            <option key={idx} value={category.value}>
-              {category.label}
+        <select onChange={onInputChange} name="category" value={Video.category}>
+          {categories.map(item => (
+            <option key={item.value} value={item.value}>
+              {item.label}
             </option>
           ))}
         </select>

@@ -34,7 +34,7 @@ function LoginPage(props) {
       <Form
         name="normal_login"
         className="login-form"
-        initialValues={{ remember: true }}
+        // initialValues={{ remember: true }}
         onFinish={onFinish}
         style={{ width: "300px", maxWidth: "400px" }}
       >
@@ -58,10 +58,10 @@ function LoginPage(props) {
             placeholder="Password"
           />
         </Form.Item>
-
+        {/* 
         <Form.Item name="remember" valuePropName="checked" noStyle>
           <Checkbox>Remember me</Checkbox>
-        </Form.Item>
+        </Form.Item> */}
 
         <Form.Item>
           <Button

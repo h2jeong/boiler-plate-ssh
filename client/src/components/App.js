@@ -52,7 +52,7 @@ function App() {
           </div>
         </Content>
         <Footer style={{ textAlign: "center" }}>
-          ©2020 Created by ZOE. https://github.com/h2jeong/boiler-plate-antd
+          ©2020 Created by ZOE. https://github.com/h2jeong/youtube-clone-antd
         </Footer>
       </Layout>
     </BrowserRouter>

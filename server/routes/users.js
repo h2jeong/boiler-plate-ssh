@@ -78,9 +78,17 @@ router.post("/logout", auth, (req, res) => {
   // console.log("logout", req.user);
 
   // 로그인한 유저의 데이터베이스의 토큰을 지워준다.
-  User.findOneAndUpdate({ _id: req.user._id }, { token: "" }, (err, doc) => {
-    if (err) return res.json({ success: false, err });
-    return res.status(200).json({ success: true });
-  });
+  User.findOneAndUpdate(
+    { _id: req.user._id },
+    { token: "" },
+    { new: true },
+    (err, doc) => {
+      if (err) return res.json({ success: false, err });
+      res
+        .clearCookie("w_auth")
+        .status(200)
+        .json({ success: true });
+    }
+  );
 });
 module.exports = router;
