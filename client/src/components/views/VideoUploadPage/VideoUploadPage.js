@@ -85,6 +85,9 @@ function VideoUploadPage(props) {
   const onSubmit = e => {
     e.preventDefault();
 
+    // 400 bad request
+    // setVideo({ ...Video, filePath: FilePath, writer: authUser.user._id });
+
     const variables = {
       ...Video,
       filePath: FilePath,
